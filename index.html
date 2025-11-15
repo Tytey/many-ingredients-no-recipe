@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Recipe Finder</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      animation: fadeIn 1.2s ease;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+      animation: slideDown 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+      animation: pop 0.4s ease;
+    }
+
+    input {
+      width: 70%;
+      padding: 12px;
+      border-radius: 10px;
+      outline: none;
+      background: #2a2a2a;
+      border: none;
+      color: white;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #2d6ee8;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover { background: #1f5cd1; }
+
+    .ingredient-item {
+      display: flex;
+      justify-content: space-between;
+      background: #2a2a2a;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      animation: pop 0.3s ease;
+    }
+
+    .results {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 30px;
+    }
+
+    .result-card {
+      background: #1a1a1a;
+      padding: 18px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease;
+      border: 1px solid #2a2a2a;
+    }
+
+    .result-card:hover {
+      background: #222;
+    }
+
+    a {
+      color: #4da6ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Recipe Finder</h1>
+  <h2>Enter ingredients you have below and get dishes that use those ingredients</h2>
+  <div class="container">
+    <input id="ingredientInput" type="text" placeholder="Enter an ingredient..." onkeydown="if(event.key==='Enter'){ addIngredient(); }"/>
+    <button onclick="addIngredient()">Add</button>
+
+    <div id="ingredientList" style="margin-top:20px;"></div>
+
+    <button style="width:100%; margin-top:20px; background:#1fb851;" onclick="searchRecipes()">Find Recipes</button>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <script>
+    let ingredients = [];
+
+    function addIngredient() {
+      const input = document.getElementById("ingredientInput");
+      const value = input.value.trim();
+      if (!value) return;
+
+      ingredients.push(value);
+      input.value = "";
+      renderIngredients();
+    }
+
+    function removeIngredient(index) {
+      ingredients.splice(index, 1);
+      renderIngredients();
+    }
+
+    function renderIngredients() {
+      const list = document.getElementById("ingredientList");
+      list.innerHTML = "";
+      ingredients.forEach((item, i) => {
+        list.innerHTML += `
+          <div class="ingredient-item">
+            <span>${item}</span>
+            <button style="background:#b83030" onclick="removeIngredient(${i})">Remove</button>
+          </div>`;
+      });
+    }
+
+    async function searchRecipes() {
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "<p>Searching...</p>";
+
+      const query = `recipes that contain only the following ingredients: ${ingredients.join(', ')}`;
+
+      const url = `/api/search?q=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
+
+
+      const data = await response.json();
+
+      const items = data.items || [];
+
+      resultsDiv.innerHTML = "";
+
+      items.forEach(item => {
+        resultsDiv.innerHTML += `
+          <div class="result-card">
+            <h2>${item.title}</h2>
+            <p>${item.snippet}</p>
+            <a href="${item.link}" target="_blank">View Recipe →</a>
+          </div>`;
+      });
+      if (items.length === 0) {
+        resultsDiv.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+      } 
+    }
+  </script>
+</body>
+</html>
