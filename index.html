@@ -183,8 +183,26 @@
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "<p>Searching...</p>";
 
-      const query = `recipes that contain only the following ingredients: ${ingredients.join(', ')} and do not contain the following ${excludedIngredients.join(', ')}`;
 
+
+      const includeList = ingredients
+        .map(i => `"${i}"`)
+        .join(" ");
+      
+      const excludeList = excludedIngredients
+        .map(i => `-"${i}"`)
+        .join(" ");
+
+
+      const query = `
+        recipes that contain only the following ingredients: ${ingredients.join(', ')}
+        and do not contain the following: ${excludedIngredients.join(', ')}
+        ${includeList} 
+        ${excludeList}
+        -blog -story -article
+      `;
+
+      
       const url = `/api/search?q=${encodeURIComponent(query)}`;
       const response = await fetch(url);
 
@@ -210,5 +228,6 @@
   </script>
 </body>
 </html>
+
 
 
