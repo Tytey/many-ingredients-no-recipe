@@ -138,7 +138,6 @@
         const ingredientName = value.substring(1).trim();
         if (!ingredientName) return;
 
-        excludedIngredients.push(ingredientName);
         ingredients.push({ name: ingredientName, excluded: true });
       } else {
         ingredients.push({ name: value, excluded: false });
@@ -171,7 +170,7 @@
         list.innerHTML += `
           <div class="ingredient-item">
             <span class="${item.excluded ? 'excluded' : ''}">
-              ${item.excluded ? '/' : ''}${item.name}
+              ${item.name}
             </span>
             <button style="background:#b83030" onclick="removeIngredient(${i})">Remove</button>
           </div>`;
@@ -183,17 +182,29 @@
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "<p>Searching...</p>";
 
-      const include = ingredients.map(i => `"${i}"`).join(" ");
-      const includeOr = ingredients.join(" OR ");
-      const exclude = excludedIngredients.map(i => `-"${i}"`).join(" ");
+
+      const includeOr = ingredients
+        .filter(i => !i.excluded)
+        .map(i => i.name)
+        .join(" OR ");
+
+      const includeAnd = ingredients
+        .filter(i => !i.excluded)
+        .map(i => `"${i.name}"`)
+        .join(" ");
+
+      const exclude = ingredients
+        .filter(i => i.excluded)
+        .map(i => `-"${i.name}"`)
+        .join(" ");
 
       const query = `
-      recipe
-      (${includeOr})
-      ${include}
-      ${exclude}
-      ingredients
-      -blog -story -article
+        recipe
+        (${includeOr})
+        ${includeAnd}
+        ${exclude}
+        ingredients
+        -blog -story -article
       `;
       
       const url = `/api/search?q=${encodeURIComponent(query)}`;
@@ -219,6 +230,7 @@
   </script>
 </body>
 </html>
+
 
 
 
