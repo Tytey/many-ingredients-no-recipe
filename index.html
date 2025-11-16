@@ -152,7 +152,7 @@
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "<p>Searching...</p>";
 
-      const query = `return recipes that contain the following ingredients: ${ingredients.join(', ')} - DO NOT RETURN BLOGS OR ARTICLES, ONLY RETURN WEBSITES WITH ACTUAL RECIPES`;
+      const query = `find recipes that contain the following ingredients: ${ingredients.join(', ')}`;
 
       const url = `/api/search?q=${encodeURIComponent(query)}`;
       const response = await fetch(url);
@@ -179,3 +179,4 @@
   </script>
 </body>
 </html>
+
