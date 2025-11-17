@@ -108,10 +108,34 @@
       color: #ff5555;
       font-weight: bold;
     }
+    
+    .github-logo {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 9999;           
+    }
+
+    .github-logo img {
+      width: 32px;
+      height: 32px;
+      opacity: 0.9;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .github-logo img:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
 
   </style>
 </head>
 <body>
+  <a href="https://github.com/Tytey/many-ingredients-no-recipe" target="_blank" class="github-logo">
+    <img src="githubLogo.png" alt="GitHub" />
+  </a>
   <h1>Recipe Finder</h1>
   <h2>Enter ingredients you have below and get dishes that use those ingredients</h2>
   <h3>use a / in front of the ingredient to exclude that ingredient from the search</h3>
@@ -228,6 +252,7 @@
   </script>
 </body>
 </html>
+
 
 
 
