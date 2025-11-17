@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Recipe Finder</title>
+  <title>Many Ingredients No Recipe</title>
+  <link rel="icon" type="image/png" href="websiteIcon.png">
   <style>
     body {
       margin: 0;
@@ -133,7 +134,6 @@
       const input = document.getElementById("ingredientInput");
       let value = input.value.trim();
       if (!value) return;
-      // Check for excluded ingredient (starts with /)
       if (value.startsWith("/")) {
         const ingredientName = value.substring(1).trim();
         if (!ingredientName) return;
@@ -149,8 +149,6 @@
 
     function removeIngredient(index) {
       const removed = ingredients[index];
-
-      // If it was excluded, remove from excludedIngredients too
       if (removed.excluded) {
         excludedIngredients = excludedIngredients.filter(
           ing => ing !== removed.name
@@ -230,6 +228,7 @@
   </script>
 </body>
 </html>
+
 
 
 
